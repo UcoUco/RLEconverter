@@ -1,8 +1,46 @@
 <html>
 <head>
+<meta charset="utf-8"> 
 <title>RLEconverter v0.1</title>
 </head>
-<body>
-Так-то лучше.
+<body>	
+
+<p><b>Перевод значения в ASCII: </b></p>
+<p><input id="inpASCII" type="text"></p>
+<p><input id="butASCII" type="button" value="Перевести"></p><div id="resASCII"></div>
+
+<script>
+butASCII.onclick = function() {
+var a = inpASCII.value;
+a = a.charCodeAt(0);
+if (a>0xFF) a-=0x350;
+var res = document.getElementById("resASCII");
+res.innerHTML = a;
+}
+</script>
+
+<p><b>Перевод значения в двоичный код:</b></p>
+<p><input id="inpBin" type="text"></p>
+<p><input id="butBin" type="button" value="Перевести"></p><div id="resBin"></div>
+
+<script>
+butBin.onclick = function() {
+var a = inpBin.value;
+a = a.charCodeAt(0);
+ if (a>0xFF ) {a-=0x350;}
+var bin = ""; 
+    do  
+    {  
+      if( a & 1 ){ bin += '1';}  
+      else { bin += '0'; }  
+      a = a >> 1; 
+    } while( a );
+var b = ( '\u202E' + bin );
+var res = document.getElementById("resBin");
+res.innerHTML = b;
+	 
+}
+</script>
+
 </body>
 </html>
