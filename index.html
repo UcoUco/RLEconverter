@@ -1,31 +1,49 @@
 <html>
 <head>
 <meta charset="utf-8"> 
-<title>RLEconverter v0.1</title>
+<title>RLEconverter v0.2</title>
 </head>
 <body>	
 
+<p><input id="inpASCII" type="text" size="20"></p>
+<p><input id="butASCII" type="button" value="Перевести в ASCII"></p>
+<p><input id="butBin" type="button" value="Перевести в дв.код"></p>
 <p><b>Перевод значения в ASCII: </b></p>
-<p><input id="inpASCII" type="text"></p>
-<p><input id="butASCII" type="button" value="Перевести"></p><div id="resASCII"></div>
+<div id="resASCII"></div>
 
 <script>
 butASCII.onclick = function() {
+var res = document.getElementById("resASCII");
+res.innerHTML = '';
 var a = inpASCII.value;
+var b = a.length;
+var i;
+for (i=0; i<b; i++) {
+a = inpASCII.value[i];
 a = a.charCodeAt(0);
 if (a>0xFF) a-=0x350;
-var res = document.getElementById("resASCII");
-res.innerHTML = a;
+res.innerHTML += inpASCII.value[i];
+res.innerHTML += ': ';
+res.innerHTML += a;
+res.innerHTML += '<br>';
+res.innerHTML += ' ';
+}
 }
 </script>
 
+
 <p><b>Перевод значения в двоичный код:</b></p>
-<p><input id="inpBin" type="text"></p>
-<p><input id="butBin" type="button" value="Перевести"></p><div id="resBin"></div>
+<div id="resBin"></div>
 
 <script>
 butBin.onclick = function() {
-var a = inpBin.value;
+var res = document.getElementById("resBin");
+res.innerHTML = '';
+var a = inpASCII.value;
+var b = a.length;
+var i;
+for (i=0; i<b; i++) {
+a = inpASCII.value[i];
 a = a.charCodeAt(0);
  if (a>0xFF ) {a-=0x350;}
 var bin = ""; 
@@ -35,12 +53,16 @@ var bin = "";
       else { bin += '0'; }  
       a = a >> 1; 
     } while( a );
-var b = ( '\u202E' + bin );
-var res = document.getElementById("resBin");
-res.innerHTML = b;
-	 
+var c = ( '\u202E' + bin );
+res.innerHTML += inpASCII.value[i];
+res.innerHTML += ': ';
+res.innerHTML += c;
+res.innerHTML += '<br>';
+res.innerHTML += ' ';
+}	 
 }
 </script>
+
 
 </body>
 </html>
