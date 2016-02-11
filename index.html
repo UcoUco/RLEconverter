@@ -1,17 +1,25 @@
 <html>
 <head>
 <meta charset="utf-8"> 
-<title>RLEconverter v0.2</title>
+<title>RLEconverter v0.7</title>
 </head>
 <body>	
-
+<p><b>Внимание! Программа работает в тестовом режиме.</p></b>
+<p><b>Если в числе не хватает нулей - их нужно ставить в начало, а не в конец</p></b>
+<p><b>Архив RLE будет работать только в том случае, если два последних введеных символа совпадают</p></b>
 <p><input id="inpASCII" type="text" size="20"></p>
 <p><input id="butASCII" type="button" value="Перевести в ASCII"></p>
 <p><input id="butBin" type="button" value="Перевести в дв.код"></p>
+<p><input id="butRLE" type="button" value="Архив RLE"></p>
 <p><b>Перевод значения в ASCII: </b></p>
 <div id="resASCII"></div>
-
+<p><b>Перевод значения в двоичный код:</b></p>
+<div id="resBin"></div>
+<p><b>Архив RLE:</b></p>
+<div id="resRLE"></div>
 <script>
+ASCIIArr = [];
+binArr = [];
 butASCII.onclick = function() {
 var res = document.getElementById("resASCII");
 res.innerHTML = '';
@@ -27,39 +35,114 @@ res.innerHTML += ': ';
 res.innerHTML += a;
 res.innerHTML += '<br>';
 res.innerHTML += ' ';
+ASCIIArr[i]=a;
+binArr[i]=a.toString(2);
 }
 }
-</script>
 
-
-<p><b>Перевод значения в двоичный код:</b></p>
-<div id="resBin"></div>
-
-<script>
 butBin.onclick = function() {
 var res = document.getElementById("resBin");
 res.innerHTML = '';
-var a = inpASCII.value;
-var b = a.length;
-var i;
+b = binArr.length; 
 for (i=0; i<b; i++) {
-a = inpASCII.value[i];
-a = a.charCodeAt(0);
- if (a>0xFF ) {a-=0x350;}
-var bin = ""; 
-    do  
-    {  
-      if( a & 1 ){ bin += '1';}  
-      else { bin += '0'; }  
-      a = a >> 1; 
-    } while( a );
-var c = ( '\u202E' + bin );
+
+while (binArr[i].length<8) {
+binArr[i]='0' + binArr[i];
+}
 res.innerHTML += inpASCII.value[i];
 res.innerHTML += ': ';
-res.innerHTML += c;
+res.innerHTML += binArr[i];
 res.innerHTML += '<br>';
 res.innerHTML += ' ';
-}	 
+}
+}
+
+butRLE.onclick = function() {
+var res = document.getElementById("resRLE");
+res.innerHTML = '';
+var i;
+var a = inpASCII.value;
+var b = a.length;
+var arr1 = [];
+var arr2 = [];
+var counter = 1;
+var k=0;
+	for (i=0; i<b; i++) {
+		arr1[i] = inpASCII.value[i];
+	}
+	for (i=1; i<=b; i++) {
+		if (arr1[i] == arr1[i-1]) {
+		counter++;
+	} else {
+		if (counter>1) {
+			arr2[k]=arr1[i-1] + 'x' + counter;
+			k++;
+			counter=1;
+	} else {
+		arr2[k]=arr1[i-1];
+	k++;
+	}
+	}
+}
+var arr3 = [];
+var n,f,fk;
+k=0;
+	for (i=0; i<arr2.length; i++) {
+		if (arr2[i].length==3) {
+			n = arr2[i];
+			arr3[k]=10000000+parseInt(parseInt(n[2],10).toString(2),10);
+			k++;
+			a = n[0].charCodeAt(0);
+				if (a>0xFF ) {a-=0x350;}
+			bin = ""; 
+			do  
+			{  
+				if( a & 1 ){ bin += '1';}  
+			else { bin += '0'; }  
+			a = a >> 1; 
+			} while( a );
+			c = ( '\u202E' + bin );
+		arr3[k]=c;
+		k++;
+		} else {
+			arr3[k]=1;
+			f=k;
+			fk=-1;
+			k++;
+				while (arr2[i].length==1) {
+				a = arr2[i].charCodeAt(0);
+					if (a>0xFF ) {a-=0x350;}
+				bin = ""; 
+				do  
+				{  
+					if( a & 1 ){ bin += '1';}  
+				else { bin += '0'; }  
+				a = a >> 1; 
+				} while( a );	
+				c = ( '\u202E' + bin );				
+				arr3[k]=c;
+				i++;
+				k++;
+				fk++;				
+				}
+			i--;
+			arr3[f]=arr3[f]+fk;
+			arr3[f]=parseInt(arr3[f].toString(2),10).toString(10);
+			while (arr3[f].length<8) {
+			arr3[f]= '0' + arr3[f];
+			}
+		}
+	}
+	for (i=0; i<arr3.length; i++) {
+		arr3[i]=arr3[i].toString();
+		while (arr3[i].length<8) {
+			arr3[i]='0' + arr3[i];		
+		}
+	}
+	for (i=0; i<arr3.length; i++) {
+		res.innerHTML += arr3[i];
+		res.innerHTML += '<br>';
+	}
 }
 </script>
 
